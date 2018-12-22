@@ -20,43 +20,106 @@ const ALPHA = 1;
 
 let mutationRate = 1/80;
 
-let canvas;
-let ctx;
+let s4Canvas;
+let s4ctx;
 let targetImage;
 let numGenes = 150;
 let geneIncrement;
 let population;
-let stop = false;
+let stopSlide4 = false;
 let generation = 0;
 let genPerIter = 1;
+
+let currentSlide = 1;
+let numSlides = 5;
 
 window.onload = start;
 
 function start () {
   // set up the canvas
-  canvas = document.getElementById('game');
-  canvas.width = WIDTH;
-  canvas.height = HEIGHT;
+  s4Canvas = document.getElementById('slide4canvas');
+  s4Canvas.width = WIDTH;
+  s4Canvas.height = HEIGHT;
   // gets the context of the canvas
-  ctx = canvas.getContext('2d');
+  s4ctx = s4Canvas.getContext('2d');
   targetImage = kissy;
 
   geneIncrement = 0;
   population = new Population ();
+
+  $(".slides").css("display", "none");
+  $(".slide-1").css("display", "block");
+
+  document.addEventListener("keydown",keyDownHandler)
+}
+
+/* ===================================================== */
+/* =             Code For The Web Design               = */
+/* ===================================================== */
+
+
+let slideEnter = [() => {}, () => {}, () => {}, slide4_enter, () => {}];
+let slideLeave = [() => {}, () => {}, () => {}, slide4_leave, () => {}];
+
+function nextSlide () {
+  $(".slides").css("display", "none");
+  slideLeave[currentSlide - 1]();
+  currentSlide ++;
+  $(`.slide-${currentSlide}`).css("display", "block");
+  slideEnter[currentSlide - 1]();
+}
+
+function backSlide () {
+  $(".slides").css("display", "none");
+  slideLeave[currentSlide - 1]();
+  currentSlide --;
+  $(`.slide-${currentSlide}`).css("display", "block");
+  slideEnter[currentSlide - 1]();
+}
+
+function keyDownHandler (e) {
+  switch (e.keyCode) {
+    case 37:
+      if(currentSlide != 0)
+        backSlide();
+      break;
+    case 39:
+      if(currentSlide != numSlides)
+        nextSlide();
+      break;
+  }
+}
+
+/**
+ * Function that runs once slide 4 is opened
+ */
+function slide4_enter () {
+  slide4Demonstration()
+}
+
+function slide4_leave () {
+  stopSLide4 = true
 }
 
 
-function gen () {
+/* ===================================================== */
+/* =            Code For Genetic Algorithm             = */
+/* ===================================================== */
+
+
+
+function slide4Demonstration () {
   generation += genPerIter;
   console.log("Generation: " + generation);
+  $(".slide-4-gen-num").text(generation);
   for(let i = 0; i < genPerIter; i++)
     population = new Population (population.painters, geneIncrement);
-  population.showBest();
+  population.showBest(s4ctx);
   console.log(population.getBest().evaluate());
-  if(!stop)
-    setTimeout(gen,10);
-
+  if(!stopSlide4)
+    setTimeout(slide4Demonstration,10);
 }
+
 
 
 /**
@@ -196,8 +259,8 @@ class Population {
 
 
 
-  showBest () {
-    this.painters[0].exhibit();
+  showBest (canvas) {
+    this.painters[0].exhibit(canvas);
   }
 
 

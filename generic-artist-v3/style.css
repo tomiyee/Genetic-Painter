@@ -1,0 +1,37 @@
+body {
+  margin:0;
+  background: #f0f0f0;
+}
+
+.title{
+  padding:10px;
+  background: #333;
+  color: #eee;
+}
+
+.container {
+  max-width:900px;
+  margin:auto;
+}
+
+.slides{
+  width: 70%;
+  padding-top:20px;
+  padding-left:15%;
+  padding-right:15%;
+}
+
+.slide-title {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.slide-body {
+  font: normal 15px/1.5em "Helvetica Neue", Helvetica, sans-serif;
+  color: #555;
+}
+
+
+.slide-2, .slide-3, .slide-4, .slide-5 {
+
+}

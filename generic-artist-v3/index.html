@@ -1,0 +1,186 @@
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type='text/javascript' src='mona-pixels.js'></script>
+    <script type='text/javascript' src="Vector.js"></script>
+    <script type='text/javascript' src="Shape.js"></script>
+    <script type='text/javascript' src="Painter.js"></script>
+    <script type='text/javascript' src="target.js"></script>
+    <script type='text/javascript' src="main.js"></script>
+    <script type='text/javascript' src='resemble.js'> </script>
+    <link href='style.css' rel='stylesheet' type='text/css' />
+  </head>
+  <body>
+
+    <div class="title">
+      <center>
+        <h1>Genetic Painter</h1>
+      </center>
+    </div>
+    <div class="container">
+
+
+      <div class="slides slide-1">
+        <div class="slide-title">The Story</div>
+        <div class="slide-body">
+          <p>
+            Whenever I go on planes, I like to give myself coding challenges to try and complete on the plane
+            before the plane lands or my laptop dies, whichever happens first. In late October of 2017, I got
+            the chance to fly from California to the East Coast, and for that flight, I decided to try programming
+            a virtual version of Leonardo Da Vinci.
+          </p>
+          <p>
+            At the time, though, it seemed really difficult to program an artificial intelligence, so I thought
+            instead of programming a single good painter, I can program a ton of paintings at random and select
+            the best of them to make more!
+          </p>
+          <p>
+            In other words, I wanted to builld a <b>Genetic Algorithm</b>.
+          </p>
+        </div>
+        <div class="slide-button">
+          <button type="button" name="button" class="slide-next">Next</button>
+        </div>
+      </div>
+
+      <div class="slides slide-2">
+        <div class="slide-title">The Theory</div>
+        <div class="slide-body">
+          <p>
+            In essense, Genetic Algorithms need a few basic components to work. A
+            genetic algorithm attempts to get better at doing some task or get closer
+            to some goal by sort of mimicking the process of evolution.
+          </p>
+          <p>
+            Let's begin with the idea of actual evolution. It's been commonly accepted
+            that evolution takes place over generations, where two organisms, like say
+            two fish reproduce. Their baby fish will have half the DNA of each parent,
+            and also some random mutations to allow for small adaptations, so that over
+            millions of years, adaptations that are beneficial and improve the fish's
+            fitness in its environment will get spread across the population.
+          </p>
+          <p>
+            The genetic algorithm breaks down this theory and uses the basic components
+            to generate approximate solutions for achieving of a goal. Basically, you
+            need to have:
+            <ol>
+              <li> <b>"Organisms"</b> that breed and carry the "genetics" </li>
+              <li> <b>"DNA"</b> that get's passed from parent to child</li>
+              <li> <b>"Population"</b> which is basically a ton of organisms at once. </li>
+              <li> <b>"Breeding"</b> that takes half the DNA from each "parent" with some random mutations </li>
+              <li> <b>"Fitness"</b> which is a measure of how well the organism does at the task </li>
+            </ol>
+            The task then becomes, to make a painter, what do I map to each of these five basic features.
+          </p>
+        </div>
+        <div class="slide-button">
+          <button type="button" name="button" class="slide-back">Back</button>
+          <button type="button" name="button" class="slide-next">Next</button>
+        </div>
+      </div>
+
+      <div class="slides slide-3">
+        <div class="slide-title">The Application</div>
+        <div class="slide-body">
+          <p>
+            For my case, the organisms are objects that hold the DNA, which I will call "painters", are
+            in charge of breeding, and get evaluated on their fitness for how well suited they are for the
+            task at hand. This task, I remind you, is to draw a a given picture with random shapes and colors.
+          </p>
+          <p>
+            Next, the DNA that each painter has will just be a huge list of shapes. Each shape keeps track of its vertices and
+            its color. The DNA is basically the recipe for how to build the picture that the painter can
+            paint. For our purposes, each painter can only paint on painting.
+          </p>
+          <p>
+            The population is basically just a big list of painters to choose from.
+          </p>
+          <p>
+            The breeding will go through the DNA for each parent and randomly select one shape from each
+            parent in order with equal probability. Then each shape will have some small chance of "mutating"
+            or basically just changing slightly.
+          </p>
+          <p>
+            Finally, we have a fitness function. This basically draws the picture
+          </p>
+        </div>
+        <div class="slide-button">
+          <button type="button" name="button" class="slide-back">Back</button>
+          <button type="button" name="button" class="slide-next">Next</button>
+        </div>
+      </div>
+
+      <div class="slides slide-4">
+        <div class="slide-title">The Result</div>
+        <div class="slide-body">
+          <center>
+            <table>
+              <tr>
+                <th>Target Image</th>
+                <th>Best of Gen #<span class="slide-4-gen-num">1</span></th>
+              </tr>
+              <tr>
+                <td><img src='face-kiss.png' style="border:2px solid black; background:black"/></td>
+                <td><canvas id='slide4canvas' width=160 height=160 style="border:2px solid black; background:black"></canvas></td>
+              </tr>
+            </table>
+          </center>
+        </div>
+        <div class="slide-button">
+          <button type="button" name="button" class="slide-back">Back</button>
+          <button type="button" name="button" class="slide-next">Next</button>
+        </div>
+      </div>
+
+      <div class="slides slide-5">
+        <div class="slide-title">Your Turn</div>
+        <div class="slide-body">
+          <p>Yup</p>
+        </div>
+        <div class="slide-button">
+          <button type="button" name="button" class="slide-back">Back</button>
+        </div>
+      </div>
+
+
+    </div>
+
+
+
+    <!-- <div class="project-title">
+      <center><h1>Genetic Painter<h1><center>
+    </div>
+
+    <hr/>
+    <div>
+      <h2>Properties:</h2>
+    </div>
+    <center>
+      <button onclick='gen()'> Begin </button>
+    </center>
+    <hr/>
+    <img src='face-kiss.png'/>
+    <canvas id='game'></canvas>
+
+
+    <script type="text/javascript">
+      // Styles the page
+      const CONTAINER_BG = "#ddd";
+      const TITLE_COLOR = "#222";
+
+
+
+      $(() => {
+
+        $(".project-title").css('color', "white");
+
+
+
+
+
+
+
+      })
+    </script> -->
+  </body>
+</html>
