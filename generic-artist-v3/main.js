@@ -47,9 +47,7 @@ function start () {
   geneIncrement = 0;
   population = new Population ();
 
-  $(".slides").css("display", "none");
-  $(".slide-1").css("display", "block");
-
+  // Add event handlers
   document.addEventListener("keydown",keyDownHandler)
 }
 
@@ -61,7 +59,15 @@ function start () {
 let slideEnter = [() => {}, () => {}, () => {}, slide4_enter, () => {}];
 let slideLeave = [() => {}, () => {}, () => {}, slide4_leave, () => {}];
 
+
+
+/**
+ * Transitions to the next slide
+ */
 function nextSlide () {
+  if(currentSlide == slideEnter.length - 1)
+    return;
+
   $(".slides").css("display", "none");
   slideLeave[currentSlide - 1]();
   currentSlide ++;
@@ -69,7 +75,15 @@ function nextSlide () {
   slideEnter[currentSlide - 1]();
 }
 
+
+
+/**
+ * Transitions to the previous slide
+ */
 function backSlide () {
+  if(currentSlide == 0)
+    return;
+
   $(".slides").css("display", "none");
   slideLeave[currentSlide - 1]();
   currentSlide --;
@@ -77,6 +91,14 @@ function backSlide () {
   slideEnter[currentSlide - 1]();
 }
 
+
+
+
+/**
+ * The Key-Down Event Handler
+ *
+ * @param  {Object} e - The event data
+ */
 function keyDownHandler (e) {
   switch (e.keyCode) {
     case 37:
@@ -90,15 +112,18 @@ function keyDownHandler (e) {
   }
 }
 
+
+
 /**
  * Function that runs once slide 4 is opened
  */
 function slide4_enter () {
-  slide4Demonstration()
+  stopSlide4 = false;
+  slide4Demonstration();
 }
 
 function slide4_leave () {
-  stopSLide4 = true
+  stopSlide4 = true;
 }
 
 
@@ -114,10 +139,33 @@ function slide4Demonstration () {
   $(".slide-4-gen-num").text(generation);
   for(let i = 0; i < genPerIter; i++)
     population = new Population (population.painters, geneIncrement);
-  population.showBest(s4ctx);
+  population.showBest(s4Canvas);
   console.log(population.getBest().evaluate());
   if(!stopSlide4)
     setTimeout(slide4Demonstration,10);
+}
+
+
+
+/**
+ * Generates a random real number between the the given bounds, inclusive
+ * @param {Number} min - The minimum value
+ * @param {Number} max - The maximum value
+ * @returns {Number} A generated number on the range from [min, max]
+ */
+function random(min, max) {
+  return Math.random() * (max-min) + min;
+}
+
+
+
+/**
+ * Returns a random boolean with probability p of returning true
+ * @param {Number} p - Probability of returning true [0,1]
+ * @returns {Boolean} A boolean
+ */
+function randomBoolean(p) {
+  return Math.random() < p;
 }
 
 
@@ -132,6 +180,7 @@ function squareError (arr1, arr2) {
   if(arr1.length != arr2.length)
     return console.error('cannot subtract arrays of unequal length');
   let res = new Array(arr1.length);
+
   for(let i = 0; i < arr1.length; i++)
     res[i] = Math.pow(arr1[i] - arr2[i], 2);
   return res;
@@ -160,7 +209,6 @@ function averArr(arr, abs) {
 
 /**
  * Calculates the MSE of the image
-
  */
 function calcError (cd) {
   let errors = squareError(targetImage, cd);
@@ -198,8 +246,8 @@ function drawImage (src, x, y, w, h, callback) {
   var image = new Image();
   image.onload = function () {
     ctx.drawImage(this, x, y, w, h);
-    if(callback)
-      callback();
+    // runs the callback function if one is given
+    callback? callback : 0;
   }
   image.src = src;
 }
@@ -215,21 +263,28 @@ class Population {
    */
   constructor (prevPop, increment) {
     this.painters = [];
+
     if(prevPop) {
       this.painters = prevPop;
       // sorts the previous population by fitness, first being most fit
       let sorted = this.sortPopulation();
       // a list of lists of genes, each row being a child
       let childrensGenes = [];
+
+      // Breeds the next generation
       for(let kid = 0; kid < POPULATION_SIZE; kid++) {
+
+        // Randomly select the first parent, favoring high fitness
         let num1 = Math.random();
         let parent1;
         for(let i = 1; i <= POPULATION_SIZE; i++) {
           if(num1 > Math.pow(DECAY_RATE, i)) {
             parent1 = sorted[i - 1].painter;
-            break
+            break;
           }
         }
+
+        // Randomly select the next parent, favoring high fitness
         let num2 = Math.random();
         let parent2;
         for(let i = 1; i <= POPULATION_SIZE; i++) {
@@ -238,16 +293,18 @@ class Population {
             break
           }
         }
+
         // let the parents breed
         let genes = parent1.breed(parent2);
+        // add the child's genes to a list of genes
         childrensGenes.push(genes);
       }
 
       numGenes += increment || 0;
-      this.painters = [];
       for(let i = 0; i < childrensGenes.length; i++) {
         this.painters.push(new Painter(childrensGenes[i]));
       }
+
       this.sortPopulation();
     }
     else{
@@ -263,24 +320,21 @@ class Population {
     this.painters[0].exhibit(canvas);
   }
 
-
-
   getBest () {
     return this.painters[0];
   }
-
-
 
   getWorst () {
     return this.painters[this.painters.length - 1];
   }
 
-
   getMedian () {
     return this.painters[Math.round(this.painters.length / 2)];
   }
 
-
+  getPainter (num) {
+    return this.painters[Math.round(num)];
+  }
 
   /**
    * Sorts the list of painters by the fitness

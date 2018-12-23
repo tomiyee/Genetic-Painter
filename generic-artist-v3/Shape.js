@@ -31,16 +31,23 @@ class Shape {
 
 
 
+
+  /**
+   * equals - Checks if the two shapes are equal to each other
+   *
+   * @param  {Shape} other - The other shape
+   * @return {Boolean} true if all the properties of the shape are identical
+   */
   equals (other) {
     if(!other.hasOwnProperty('isShape') || !other.isShape)
       return false;
     if(this.vertices.length != other.vertices.length)
       return false;
+    if(this.color != other.color)
+      return false;
     for(let i in this.vertices)
       if(!this.vertices[i].equals(other.vertices[i]))
         return false;
-    if(this.color != other.color)
-      return false;
     return true;
   }
 
@@ -95,11 +102,14 @@ class Shape {
     this.vertices.push(v);
     // creates the number of vertices
     for(let i = 1; i < numVertices; i++) {
-      let v = new Vector();
-      do {
-        v.randomize(WIDTH, HEIGHT);
-      } while(this.vertices[0].distanceTo(v) > MAX_DIST);
-
+      // generates a random angle and a random distance
+      const theta = Math.random() * 2 * Math.PI;
+      const dist = Math.random() * MAX_DIST;
+      // generates the resulting x and y that is the given angle and distance from the first vertex
+      const x = this.vertices[0].getX() + dist * Math.cos(theta);
+      const y = this.vertices[0].getY() + dist * Math.sin(theta);
+      // appends the vector
+      let v = new Vector(x, y);
       this.vertices.push(v)
     }
     return this;
@@ -107,6 +117,9 @@ class Shape {
 
 
 
+  /**
+   * Returns a new Shape object with identical properties
+   */
   copy () {
     let vertices = [];
     for(let i in this.vertices)
@@ -118,6 +131,39 @@ class Shape {
     c.b = this.b;
     c.a = this.a;
     return c;
+  }
+
+
+
+  /**
+   * Returns a vector representing the location of the
+   * centroid of this shape, given this is a triangle
+   *
+   * @return {Vector} The position of the centroid
+   */
+  centroid () {
+    let x = 0;
+    let y = 0;
+    for (v of this.vertices) {
+      x += v.x;
+      y += v.y;
+    }
+    return new Vector(x/3, y/3);
+  }
+
+
+
+  /**
+   * Returns the area of the shape
+   */
+  area() {
+    if (this.vertices.length > 3)
+      return console.error("Error, the area function does not work with polygons beyond triangles!");
+
+    let ab = this.vertices[0].subtract(this.vertices[1]);
+    let ac = this.vertices[0].subtract(this.vertices[2]);
+
+    return 0.5*ab.cross(ac).length();
   }
 
 
