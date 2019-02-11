@@ -23,6 +23,7 @@
       <div class="slides slide-1">
         <div class="slide-title">The Story</div>
         <div class="slide-body">
+
           <p>
             Whenever I go on planes, I like to give myself coding challenges to try and complete on the plane
             before the plane lands or my laptop dies, whichever happens first. In late October of 2017, I got
@@ -118,10 +119,14 @@
               <tr>
                 <th>Target Image</th>
                 <th>Best of Gen #<span class="slide-4-gen-num">1</span></th>
+                <th>Median of Gen #<span class="slide-4-gen-num">1</span></th>
+                <th>Worst of Gen #<span class="slide-4-gen-num">1</span></th>
               </tr>
               <tr>
                 <td><img src='face-kiss.png' style="border:2px solid black; background:black"/></td>
-                <td><canvas id='slide4canvas' width=160 height=160 style="border:2px solid black; background:black"></canvas></td>
+                <td><canvas id='slide4BestCanvas' width=160 height=160 style="border:2px solid black; background:black"></canvas></td>
+                <td><canvas id='slide4MedianCanvas' width=160 height=160 style="border:2px solid black; background:black"></canvas></td>
+                <td><canvas id='slide4WorstCanvas' width=160 height=160 style="border:2px solid black; background:black"></canvas></td>
               </tr>
             </table>
           </center>
@@ -141,46 +146,7 @@
           <button type="button" name="button" class="slide-back">Back</button>
         </div>
       </div>
-
-
     </div>
 
-
-
-    <!-- <div class="project-title">
-      <center><h1>Genetic Painter<h1><center>
-    </div>
-
-    <hr/>
-    <div>
-      <h2>Properties:</h2>
-    </div>
-    <center>
-      <button onclick='gen()'> Begin </button>
-    </center>
-    <hr/>
-    <img src='face-kiss.png'/>
-    <canvas id='game'></canvas>
-
-
-    <script type="text/javascript">
-      // Styles the page
-      const CONTAINER_BG = "#ddd";
-      const TITLE_COLOR = "#222";
-
-
-
-      $(() => {
-
-        $(".project-title").css('color', "white");
-
-
-
-
-
-
-
-      })
-    </script> -->
   </body>
 </html>

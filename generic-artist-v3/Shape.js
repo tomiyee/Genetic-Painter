@@ -9,7 +9,7 @@ class Shape {
     this.isShape = true;
     this.vertices = arr || [];
     if(typeof arr == 'undefined')
-      this.randomizeVertices();
+      this.randomizeVertices(true);
     this.randomizeColor();
   }
 
@@ -28,7 +28,6 @@ class Shape {
     context.closePath();
     context.fill();
   }
-
 
 
 
@@ -90,21 +89,46 @@ class Shape {
 
   /**
    * Generates random vertices for the Shape
+   *
+   * @param {boolean} applyConstraints - Applies the sidelength constraints
    * @returns {Shape} This
    */
-  randomizeVertices () {
-    // empties the existing vertices
-    this.vertices = [];
+  randomizeVertices (applyConstraints) {
     // generates a random number of vertices between MIN_VERTICES and MAX_VERTICES
-    let numVertices = Math.round(Math.random()*(MAX_VERTICES - MIN_VERTICES)) + MIN_VERTICES;
-    let v = new Vector();
-    v.randomize(W, H);
-    this.vertices.push(v);
+    const numVertices = Math.round(random(MIN_VERTICES, MAX_VERTICES));
+
+    // empties the existing vertices
+    this.vertices = new Array(numVertices);
+
+    const v = new Vector(random(MAX_SIDE_LENGTH, W-MAX_SIDE_LENGTH), random(MAX_SIDE_LENGTH, H-MAX_SIDE_LENGTH));
+    this.vertices[0] = v;
+
+    if(applyConstraints){
+      // generate the second point
+      const theta1 = random(0, 2*Math.PI);
+      const dist1 = random(MIN_SIDE_LENGTH, MAX_SIDE_LENGTH);
+      const v2 = v.add(new Vector(dist1*Math.cos(theta1), dist1*Math.sin(theta1)));
+      this.vertices[1] = v2;
+      // generate the final point
+
+      const a = random(MIN_SIDE_LENGTH, MAX_SIDE_LENGTH);
+      const b = random(dist1 - a < MIN_SIDE_LENGTH ? MIN_SIDE_LENGTH: dist1 - a, MAX_SIDE_LENGTH);
+
+      // using law of cosines
+      const angleA = Math.acos((- Math.pow(b,2) + a**2 + dist1**2 )/(2*a*dist1));
+
+      this.vertices[2] = v.add(
+        new Vector(a*Math.cos(theta1+angleA), a*Math.sin(theta1+angleA))
+      );
+
+      return this;
+    }
+
     // creates the number of vertices
     for(let i = 1; i < numVertices; i++) {
       // generates a random angle and a random distance
-      const theta = Math.random() * 2 * Math.PI;
-      const dist = Math.random() * MAX_DIST;
+      const theta = random(0, 2*Math.PI);
+      const dist = random(MIN_SIDE_LENGTH, MAX_SIDE_LENGTH);
       // generates the resulting x and y that is the given angle and distance from the first vertex
       const x = this.vertices[0].getX() + dist * Math.cos(theta);
       const y = this.vertices[0].getY() + dist * Math.sin(theta);
@@ -121,9 +145,10 @@ class Shape {
    * Returns a new Shape object with identical properties
    */
   copy () {
-    let vertices = [];
-    for(let i in this.vertices)
+    let vertices = new Array(this.vertices.length);
+    for(let i = 0; i < this.vertices.length; i++)
       vertices[i] = this.vertices[i].copy();
+
     let c = new Shape(vertices);
     c.color = this.color;
     c.r = this.r;
@@ -144,7 +169,7 @@ class Shape {
   centroid () {
     let x = 0;
     let y = 0;
-    for (v of this.vertices) {
+    for (let v of this.vertices) {
       x += v.x;
       y += v.y;
     }
