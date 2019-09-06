@@ -7,10 +7,7 @@ class Painter {
 
   constructor (genes) {
     // prepares a canvas specifically for this painter
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = W;
-    this.canvas.height = H;
-    this.canvas.style.display = 'none';
+    this.canvas = invisibleCanvas;
     this.ctx = this.canvas.getContext('2d');
 
     this.fitness = null;
@@ -56,8 +53,11 @@ class Painter {
    */
   exhibit (canvas) {
     let museum = canvas.getContext("2d");
-
-    museum.putImageData(this.ctx.getImageData(0,0,W,H),0,0);
+    museum.fillStyle = 'rgba(0,0,0,1)';
+    museum.fillRect(0,0,W,H);
+    // this.genes[0].draw(museum);
+    for(var shape of this.genes)
+      shape.draw(museum);
   }
 
 

@@ -37,6 +37,8 @@ let genPerIter = 1;
 let currentSlide = 1;
 let numSlides = 5;
 
+let invisibleCanvas;
+
 let s4BestCanvas, s4Bestctx;
 let s4MedianCanvas, s4Medianctx;
 let s4WorstCanvas, s4Worstctx;
@@ -46,16 +48,21 @@ window.onload = start;
 function start () {
   // set up the canvas
   s4BestCanvas = document.getElementById('slide4BestCanvas');
-  s4BestCanvas.width = WIDTH;
-  s4BestCanvas.height = HEIGHT;
+    s4BestCanvas.width = WIDTH;
+    s4BestCanvas.height = HEIGHT;
 
   s4MedianCanvas = document.getElementById('slide4MedianCanvas');
-  s4MedianCanvas.width = WIDTH;
-  s4MedianCanvas.height = HEIGHT;
+    s4MedianCanvas.width = WIDTH;
+    s4MedianCanvas.height = HEIGHT;
 
   s4WorstCanvas = document.getElementById('slide4WorstCanvas');
-  s4WorstCanvas.width = WIDTH;
-  s4WorstCanvas.height = HEIGHT;
+    s4WorstCanvas.width = WIDTH;
+    s4WorstCanvas.height = HEIGHT;
+
+  invisibleCanvas = document.createElement('canvas');
+    invisibleCanvas.width = W;
+    invisibleCanvas.height = H;
+    invisibleCanvas.style.display = 'none';
 
   // gets the context of the canvas
   s4Bestctx   = s4BestCanvas.getContext('2d');
@@ -68,7 +75,7 @@ function start () {
   population = new Population ();
 
   // Add event handlers
-  document.addEventListener("keydown",keyDownHandler)
+  document.addEventListener("keydown",keyDownHandler);
 }
 
 /* ===================================================== */
@@ -127,6 +134,8 @@ function keyDownHandler (e) {
       if(currentSlide != numSlides)
         nextSlide();
       break;
+    case 13:
+        slide4Generation()
   }
 }
 
@@ -154,8 +163,10 @@ function slide4Generation() {
   console.log("Generation: " + generation);
   $(".slide-4-gen-num").text(generation);
 
-  for(let i = 0; i < genPerIter; i++)
-    population = new Population (population.painters, geneIncrement);
+  for(let i = 0; i < genPerIter; i++){
+    p = population.painters
+    population = new Population (p, geneIncrement);
+  }
 
   population.showBest(s4BestCanvas);
   population.getMedian().exhibit(s4MedianCanvas);
@@ -165,9 +176,7 @@ function slide4Generation() {
 function slide4Demonstration () {
 
   slide4Generation();
-
-  console.log(population.getBest().evaluate());
-
+  // console.log(population.getBest().evaluate());
   if(!stopSlide4)
     setTimeout(slide4Demonstration,10);
 }
@@ -230,7 +239,7 @@ function randInt (min, max) {
 
 /**
  * Returns a random boolean with probability p of returning true
- * @param {Number} p - Probability of returning true [0,1]
+ * @param {Number} p - [0, 1] Probability of returning true
  * @returns {Boolean} A boolean
  */
 function randomBoolean(p) {
